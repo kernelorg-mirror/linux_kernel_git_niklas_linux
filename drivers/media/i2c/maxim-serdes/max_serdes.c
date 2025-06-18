@@ -20,6 +20,11 @@
 	.bpp = (_bpp),		\
 }
 
+const char * const max_tpg_patterns[] = {
+	[MAX_TPG_PATTERN_GRADIENT] = "Gradient",
+	[MAX_TPG_PATTERN_CHECKERBOARD] = "Checkerboard",
+};
+
 static const char * const max_gmsl_versions[] = {
 	[MAX_GMSL_2_3GBPS] = "GMSL2 3Gbps",
 	[MAX_GMSL_2_6GBPS] = "GMSL2 6Gbps",
