@@ -2480,6 +2480,27 @@ static int max_des_disable_streams(struct v4l2_subdev *sd,
 	return max_des_update_streams(sd, state, pad, streams_mask, false);
 }
 
+static int max_des_s_power(struct v4l2_subdev *sd, int on)
+{
+	struct max_des_priv *priv = v4l2_get_subdevdata(sd);
+	struct max_des *des = priv->des;
+	int ret;
+
+	ret =des->ops->set_enable(des, on);
+	if (ret)
+		return ret;
+
+	for (unsigned int i = 0; i < des->ops->num_phys; i++) {
+		struct max_des_phy *phy = &des->phys[i];
+
+		ret = des->ops->set_phy_active(des, phy, on);
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+
 #ifdef CONFIG_VIDEO_ADV_DEBUG
 static int max_des_g_register(struct v4l2_subdev *sd,
 			      struct v4l2_dbg_register *reg)
@@ -2511,6 +2532,7 @@ static int max_des_s_register(struct v4l2_subdev *sd,
 
 static const struct v4l2_subdev_core_ops max_des_core_ops = {
 	.log_status = max_des_log_status,
+	.s_power = max_des_s_power,
 #ifdef CONFIG_VIDEO_ADV_DEBUG
 	.g_register = max_des_g_register,
 	.s_register = max_des_s_register,
